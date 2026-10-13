@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>페르소나 메이커 - 시안송 제작</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+            mono: ['Fira Code', 'monospace'],
+          },
+          colors: {
+            cyberDark: '#0f0f17',
+            cyberCard: '#1a1a26',
+            cyberInput: '#12121c',
+            cyberBorder: '#2e2e48',
+            cyberAccent: '#8a2be2',
+            cyberGlow: '#a855f7',
+            cyberPink: '#ec4899',
+            cyberMuted: '#94a3b8'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0f0f17;
+      color: #e2e8f0;
+      font-family: 'Pretendard', sans-serif;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(138, 43, 226, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(236, 72, 153, 0.08) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    .cyber-panel {
+      background: #1a1a26;
+      border: 1px solid #2e2e48;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), 0 0 20px rgba(138, 43, 226, 0.1);
+    }
+
+    .cyber-input, .cyber-select {
+      background-color: #12121c;
+      border: 1px solid #2e2e48;
+      color: #f1f5f9;
+      transition: all 0.2s ease;
+    }
+    .cyber-input:focus, .cyber-select:focus {
+      outline: none;
+      border-color: #8a2be2;
+      box-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
+    }
+
+    .cyber-btn-primary {
+      background: linear-gradient(135deg, #8a2be2 0%, #7c3aed 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(138, 43, 226, 0.35);
+      transition: all 0.2s ease;
+    }
+    .cyber-btn-primary:hover {
+      box-shadow: 0 6px 20px rgba(138, 43, 226, 0.5);
+      transform: translateY(-1px);
+    }
+    .cyber-btn-primary:active {
+      transform: translateY(1px);
+    }
+
+    .cyber-btn-secondary {
+      background-color: #27273a;
+      color: #cbd5e1;
+      border: 1px solid #3f3f5a;
+      transition: all 0.2s ease;
+    }
+    .cyber-btn-secondary:hover {
+      background-color: #32324a;
+      color: #ffffff;
+      border-color: #8a2be2;
+    }
+
+    .cyber-btn-accent {
+      background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+      transition: all 0.2s ease;
+    }
+    .cyber-btn-accent:hover {
+      box-shadow: 0 6px 20px rgba(236, 72, 153, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .wv-card-selected {
+      border-color: #a855f7 !important;
+      background-color: rgba(138, 43, 226, 0.15) !important;
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.3) !important;
+    }
+
+    .custom-select-wrapper {
+      position: relative;
+    }
+    .custom-select-wrapper::after {
+      content: '▼';
+      font-size: 0.65rem;
+      color: #94a3b8;
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #12121c;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2e2e48;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #8a2be2;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between p-4 sm:p-6 md:p-10">
+
+  <header class="w-full max-w-4xl text-center my-4 relative">
+    <div class="inline-block px-3 py-1 rounded-full border border-cyberAccent/40 bg-cyberAccent/10 text-cyberGlow text-xs font-semibold mb-3 tracking-wide">
+      ✦ RP PERSONA GENERATOR
+    </div>
+    <h1 class="text-4xl sm:text-5xl font-black tracking-tight text-white mb-2">
+      페르소나 메이커
+    </h1>
+    <h2 class="text-sm sm:text-base font-medium text-cyberPink tracking-widest uppercase font-mono">
+      시안송 제작
+    </h2>
+  </header>
+
+  <main class="w-full max-w-4xl cyber-panel rounded-2xl p-6 sm:p-8 md:p-10 my-auto">
+
+    <!-- Progress Nav Bar -->
+    <div class="flex items-center justify-between mb-8 pb-5 border-b border-cyberBorder overflow-x-auto gap-2">
+      <div id="step-nav-1" class="flex items-center gap-2 shrink-0 cursor-pointer" onclick="goToStep(1)">
+        <span class="w-7 h-7 rounded-full border border-cyberAccent flex items-center justify-center font-mono font-bold text-xs bg-cyberAccent text-white">1</span>
+        <span class="text-xs sm:text-sm font-bold text-white">기본 정보 & 세계관</span>
+      </div>
+      <div class="h-[1px] bg-cyberBorder flex-1 min-w-[12px]"></div>
+      <div id="step-nav-2" class="flex items-center gap-2 shrink-0 cursor-pointer" onclick="goToStep(2)">
+        <span class="w-7 h-7 rounded-full border border-cyberBorder flex items-center justify-center font-mono font-bold text-xs bg-cyberInput text-cyberMuted">2</span>
+        <span class="text-xs sm:text-sm font-medium text-cyberMuted">세부 스탯 & 팩션</span>
+      </div>
+      <div class="h-[1px] bg-cyberBorder flex-1 min-w-[12px]"></div>
+      <div id="step-nav-3" class="flex items-center gap-2 shrink-0 cursor-pointer" onclick="goToStep(3)">
+        <span class="w-7 h-7 rounded-full border border-cyberBorder flex items-center justify-center font-mono font-bold text-xs bg-cyberInput text-cyberMuted">3</span>
+        <span class="text-xs sm:text-sm font-medium text-cyberMuted">성격, 어조 & 과거사</span>
+      </div>
+      <div class="h-[1px] bg-cyberBorder flex-1 min-w-[12px]"></div>
+      <div id="step-nav-4" class="flex items-center gap-2 shrink-0">
+        <span class="w-7 h-7 rounded-full border border-cyberBorder flex items-center justify-center font-mono font-bold text-xs bg-cyberInput text-cyberMuted">4</span>
+        <span class="text-xs sm:text-sm font-medium text-cyberMuted">시트 완성</span>
+      </div>
+    </div>
+
+    <div id="step-1" class="space-y-6">
+      <h3 class="text-lg font-bold text-white border-b border-cyberBorder pb-2 flex items-center gap-2">
+        <span class="text-cyberGlow font-mono">STEP 01.</span> 기본 정보 및 세계관 선택
+      </h3>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-xs font-semibold text-cyberMuted mb-2">이름 / 칭호 <span class="text-cyberPink">*</span></label>
+          <input type="text" id="input-name" placeholder="예: 레이븐, 신시아, 강이현" class="w-full cyber-input rounded-xl px-4 py-3 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-cyberMuted mb-2">성별 / 대명사 <span class="text-cyberPink">*</span></label>
+          <div class="custom-select-wrapper">
+            <select id="input-gender" class="w-full cyber-select rounded-xl px-4 py-3 text-sm appearance-none">
+              <option value="여성">여성 (Female)</option>
+              <option value="남성">남성 (Male)</option>
+              <option value="안드로이드/무성">안드로이드 / 무성 (Genderless)</option>
+              <option value="비밀/불명">비밀 / 불명 (Unknown)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-cyberMuted mb-3">세계관 장르 선택 (Worldview) <span class="text-cyberPink">*</span></label>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-80 overflow-y-auto p-1">
+          <button type="button" onclick="selectWorldview('fantasy')" id="wv-fantasy" class="wv-btn text-left p-3.5 rounded-xl border border-cyberBorder bg-cyberInput hover:border-cyberGlow transition">
+            <div class="text-xl mb-1">⚔️</div>
+            <div class="font-bold text-xs text-white">정통 판타지</div>
+            <div class="text-[10px] text-cyberMuted mt-0.5">마법, 검술, 고대 종족</div>
+          </button>
+          <button type="button" onclick="selectWorldview('isekai')" id="wv-isekai" class="wv-btn text-left p-3.5 rounded-xl border border-cyberBorder bg-cyberInput hover:border-cyberGlow transition">
+            <div class="text-xl mb-1">🌀</div>
+            <div class="font-bold text-xs text-white">이세계 환생 / 퓨전</div>
+            <div class="text-[10px] text-cyberMuted mt-0.5">차원이동, 치트, 영애물</div>
+          </button>
+          <button type="button" onclick="selectWorldview('youth')" id="wv-youth" class="wv-btn text-left p-3.5 rounded-xl border border-cyberBorder bg-cyberInput hover:border-cyberGlow transition">
+            <div class="text-xl mb-1">🎒</div>
+            <div class="font-bold text-xs text-white">현대 / 학원물</div>
+            <div class="text-[10px] text-cyberMuted mt-0.5">학원물, 일상, 청춘 로맨스</div>
+          </button>
+          <button type="button" onclick="selectWorldview('urban')" id="wv-urban" class="wv-btn text-left p-3.5 rounded-xl border border-cyberBorder bg-cyberInput hover:border-cyberGlow transition">
+            <div class="text-xl mb-1">🏰</div>
+            <div class="font-bold text-xs text-white">현대 어반 판타지</div>
+            <div class="text-[10px] text-cyberMuted mt-0.5">헌터, 게이트, 각성자</div>
+          </button>
+          <button type="button" onclick="selectWorldview('cyberpunk')" id="wv-cyberpunk" class="wv-btn text-left p-3.5 rounded-xl border border-cyberBorder bg-cyberInput hover:border-cyberGlow transition">
+            <div class="text-xl mb-1">🦾</div>
+            <div class="font-bold text-xs text-white">SF / 사이버펑크</div>
+            <div class="text-[10px] text-cyberMuted mt-0.5">신체개조, 해킹, 미래도시</div>
+          </button>
+          <button type="button" onclick="selectWorldview('steampunk')" id="wv-steampunk" class="wv-btn text-left p-3.5 rounded-xl border border-cyberBorder bg-cyberInput hover:border-cyberGlow transition">
+            <div class="text-xl mb-1">⚙️</div>
+            <div class="font-bold text-xs text-white">스팀펑크 / 가스등</div>
+            <div class="text-[10px] text-cyberMuted mt-0.5">증기기관, 비행선, 빅토리아</div>
+          </button>
+          <button type="button" onclick="selectWorldview('darktale')" id="wv-darktale" class="wv-btn text-left p-3.5 rounded-xl border border-cyberBorder bg-cyberInput hover:border-cyberGlow transition">
+            <div class="text-xl mb-1">🩸</div>
+            <div class="font-bold text-xs text-white">다크 판타지 / 잔혹 동화</div>
+            <div class="text-[10px] text-cyberMuted mt-0.5">저주, 심연, 비극적 서사</div>
+          </button>
+          <button type="button" onclick="selectWorldview('apocalypse')" id="wv-apocalypse" class="wv-btn text-left p-3.5 rounded-xl border border-cyberBorder bg-cyberInput hover:border-cyberGlow transition">
+            <div class="text-xl mb-1">☣️</div>
+            <div class="font-bold text-xs text-white">포스트 아포칼립스 / 생존</div>
+            <div class="text-[10px] text-cyberMuted mt-0.5">문명 멸망, 생존, 황무지</div>
+          </button>
+          <button type="button" onclick="selectWorldview('wuxia')" id="wv-wuxia" class="wv-btn text-left p-3.5 rounded-xl border border-cyberBorder bg-cyberInput hover:border-cyberGlow transition">
+            <div class="text-xl mb-1">🗡️</div>
+            <div class="font-bold text-xs text-white">무협 / 선협</div>
+            <div class="text-[10px] text-cyberMuted mt-0.5">문파, 내공, 등선, 동양 판타지</div>
+          </button>
+          <button type="button" onclick="selectWorldview('occult')" id="wv-occult" class="wv-btn text-left p-3.5 rounded-xl border border-cyberBorder bg-cyberInput hover:border-cyberGlow transition">
+            <div class="text-xl mb-1">🐙</div>
+            <div class="font-bold text-xs text-white">오컬트 / 심리 미스테리</div>
+            <div class="text-[10px] text-cyberMuted mt-0.5">광기, 고대신, 음모, 미스터리</div>
+          </button>
+          <button type="button" onclick="selectWorldview('spaceopera')" id="wv-spaceopera" class="wv-btn text-left p-3.5 rounded-xl border border-cyberBorder bg-cyberInput hover:border-cyberGlow transition">
+            <div class="text-xl mb-1">🚀</div>
+            <div class="font-bold text-xs text-white">스페이스 오페라</div>
+            <div class="text-[10px] text-cyberMuted mt-0.5">은하 제국, 함선, 외계 종족</div>
+          </button>
+          <button type="button" onclick="selectWorldview('mythology')" id="wv-mythology" class="wv-btn text-left p-3.5 rounded-xl border border-cyberBorder bg-cyberInput hover:border-cyberGlow transition">
+            <div class="text-xl mb-1">🏛️</div>
+            <div class="font-bold text-xs text-white">신화 / 하이 디바인</div>
+            <div class="text-[10px] text-cyberMuted mt-0.5">신, 반신, 천상계, 신화적 대서사</div>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-4">
+        <button onclick="goToStep(2)" class="px-6 py-3 rounded-xl cyber-btn-primary text-sm font-bold flex items-center gap-2">
+          다음 단계 (세부 스탯) <span>→</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="step-2" class="space-y-6 hidden">
+      <div class="flex items-center justify-between border-b border-cyberBorder pb-2">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <span class="text-cyberGlow font-mono">STEP 02.</span> 세부 스탯 & 팩션 설정
+        </h3>
+        <button type="button" onclick="rollRandomFields()" class="text-xs px-3 py-1.5 rounded-lg cyber-btn-secondary font-semibold flex items-center gap-1">
+          🎲 스탯 전체 랜덤
+        </button>
+      </div>
+
+      <p class="text-xs text-cyberMuted">선택한 세계관 장르에 맞춘 전용 항목입니다. 원하는 값이나 '기타 (직접 입력)'를 고르세요.</p>
+
+      <div id="dynamic-fields-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Dynamic selects injected by JavaScript -->
+      </div>
+
+      <div class="flex justify-between pt-4">
+        <button onclick="goToStep(1)" class="px-5 py-3 rounded-xl cyber-btn-secondary text-sm font-medium">
+          ← 이전 단계
+        </button>
+        <button onclick="goToStep(3)" class="px-6 py-3 rounded-xl cyber-btn-primary text-sm font-bold flex items-center gap-2">
+          다음 단계 (성격/과거) <span>→</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="step-3" class="space-y-6 hidden">
+      <h3 class="text-lg font-bold text-white border-b border-cyberBorder pb-2 flex items-center gap-2">
+        <span class="text-cyberGlow font-mono">STEP 03.</span> 성격, 어조 & 과거사 작성
+      </h3>
+
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <label class="block text-xs font-semibold text-cyberMuted">성격 태그 (다중 선택 가능)</label>
+          <button type="button" onclick="rollRandomPersonalityTags()" class="text-xs px-3 py-1 rounded-lg cyber-btn-accent font-semibold flex items-center gap-1">
+            🎲 성격 랜덤 추천
+          </button>
+        </div>
+        <div id="personality-tags" class="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-3 rounded-xl bg-cyberInput border border-cyberBorder">
+          <!-- Personality Tag Buttons Injected via JS -->
+        </div>
+        <input type="text" id="input-personality-text" placeholder="기타 직접 추가하고 싶은 성격 키워드..." class="w-full cyber-input rounded-xl px-4 py-2.5 text-xs mt-3">
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-cyberMuted mb-2">말투 / 어조 (Speech Style)</label>
+          <div class="custom-select-wrapper">
+            <select id="input-speech-tone" onchange="onSpeechToneChange()" class="w-full cyber-select rounded-xl px-4 py-3 text-xs appearance-none">
+              <!-- Speech Options Injected via JS -->
+            </select>
+          </div>
+          <input type="text" id="input-speech-tone-custom" placeholder="말투 직접 입력 (예: 차갑지만 은근 다정한 존댓말)" class="w-full cyber-input rounded-xl px-4 py-2.5 text-xs mt-2 hidden">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-cyberMuted mb-2">대표 대사 예시 (Dialogue Snippet)</label>
+          <div class="relative">
+            <input type="text" id="input-dialogue" placeholder="선택한 말투에 맞춰 자동 적용되거나 직접 수정하세요." class="w-full cyber-input rounded-xl px-4 py-3 text-xs pr-16">
+            <button type="button" onclick="generateRandomDialogue()" class="absolute right-2 top-2 px-2.5 py-1 bg-cyberCard text-[11px] font-semibold rounded-lg border border-cyberBorder hover:border-cyberGlow text-cyberGlow">랜덤</button>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <label class="block text-xs font-semibold text-cyberMuted">과거 배경 & 비밀 (Backstory)</label>
+          <button type="button" onclick="generateRandomBackstory()" class="text-xs px-3 py-1 rounded-lg cyber-btn-secondary font-semibold flex items-center gap-1">
+            🎲 과거/비밀 랜덤 뽑기
+          </button>
+        </div>
+        <textarea id="input-backstory" rows="4" placeholder="캐릭터의 과거사, 행동 동기, 숨겨진 트라우마나 비밀..." class="w-full cyber-input rounded-xl p-3 text-xs leading-relaxed resize-none"></textarea>
+      </div>
+
+      <div class="flex justify-between pt-4">
+        <button onclick="goToStep(2)" class="px-5 py-3 rounded-xl cyber-btn-secondary text-sm font-medium">
+          ← 이전 단계
+        </button>
+        <button onclick="generateFinalSheet(); goToStep(4);" class="px-6 py-3 rounded-xl cyber-btn-primary text-sm font-bold flex items-center gap-2">
+          ✨ 페르소나 기록 완료
+        </button>
+      </div>
+    </div>
+
+    <div id="step-4" class="space-y-6 hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-cyberBorder pb-3">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <span class="text-cyberGlow font-mono">STEP 04.</span> 완성된 페르소나 시트
+        </h3>
+
+        <div class="flex bg-cyberInput p-1 rounded-xl border border-cyberBorder text-xs gap-1 self-start sm:self-auto font-mono">
+          <button onclick="switchFormat('standard')" id="fmt-standard" class="px-3 py-1.5 rounded-lg font-semibold bg-cyberAccent text-white">기본 시트</button>
+          <button onclick="switchFormat('markdown')" id="fmt-markdown" class="px-3 py-1.5 rounded-lg font-semibold text-cyberMuted hover:text-white">마크다운</button>
+          <button onclick="switchFormat('prompt')" id="fmt-prompt" class="px-3 py-1.5 rounded-lg font-semibold text-cyberMuted hover:text-white">AI 프롬프트</button>
+          <button onclick="switchFormat('archive')" id="fmt-archive" class="px-3 py-1.5 rounded-lg font-semibold text-cyberMuted hover:text-white">JSON</button>
+        </div>
+      </div>
+
+      <div class="relative">
+        <textarea id="sheet-output" readonly class="w-full h-80 cyber-input rounded-xl p-4 font-mono text-xs sm:text-sm text-slate-200 leading-relaxed resize-none bg-cyberInput border-cyberBorder"></textarea>
+        <div id="copy-toast" class="absolute bottom-4 right-4 bg-cyberAccent text-white text-xs font-bold px-3 py-1.5 rounded-lg opacity-0 transition-opacity pointer-events-none shadow-lg">
+          ✓ 클립보드 복사 완료!
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+        <div class="flex items-center gap-2">
+          <button onclick="restartAll()" class="px-4 py-2.5 rounded-xl cyber-btn-accent text-xs sm:text-sm font-bold flex items-center gap-1.5">
+            🔄 다시 만들기
+          </button>
+          <button onclick="goToStep(3)" class="px-4 py-2.5 rounded-xl cyber-btn-secondary text-xs sm:text-sm font-semibold">
+            ✏️ 내용 수정
+          </button>
+        </div>
+
+        <div>
+          <button onclick="copySheetToClipboard()" class="px-6 py-2.5 rounded-xl cyber-btn-primary text-xs sm:text-sm font-bold flex items-center gap-2">
+            📋 클립보드 복사
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="mt-8 text-center text-xs text-cyberMuted font-mono">
+    <p>페르소나 메이커 &bull; 시안송 제작 &bull; RP Persona Generator</p>
+  </footer>
+
+  <script>
+    let currentStep = 1;
+    let selectedWorldview = 'fantasy';
+    let activePersonalityTags = new Set();
+    let currentFormat = 'standard';
+
+    const worldviewSchemas = {
+      fantasy: {
+        races: ["인간", "엘프", "하프엘프", "드워프", "수인족", "마족 / 뱀파이어", "천족 / 에인절", "기타 (직접 입력)"],
+        classes: ["검사 / 기사", "대마법사", "암살자 / 도적", "성직자 / 힐러", "궁수 / 정찰병", "정령술사", "기타 (직접 입력)"],
+        abilities: ["화염 마법 Mastery", "환영 및 심리 지배", "검기 및 신체 강화", "신성 치유술", "그림자 보행", "기타 (직접 입력)"],
+        factions: ["왕국 성기사단", "모험가 길드 '아스트라'", "비밀 흑마법 교단", "중립 용병단", "자유 방랑자", "기타 (직접 입력)"]
+      },
+      isekai: {
+        races: ["전생자 (현대인)", "이세계 주민", "마왕족", "아티팩트 의인화", "악역 영애/귀족", "기타 (직접 입력)"],
+        classes: ["치트 용사", "방구석 연금술사", "상태창 해커", "차원 방랑자", "슬로우라이프 귀농가", "기타 (직접 입력)"],
+        abilities: ["절대 방어 스킬", "상대 스킬 복사", "무한 마력 창고", "시간 정지/되돌리기", "자동 전투 모드", "기타 (직접 입력)"],
+        factions: ["이세계 소환 왕국", "마왕군 간부진", "차원 이주자 연합", "솔로 플레이어", "기타 (직접 입력)"]
+      },
+      youth: {
+        races: ["일반 학생", "전학생", "학생회장", "소꿉친구", "아이돌 / 연습생", "기타 (직접 입력)"],
+        classes: ["선도부원", "밴드부 부원", "운동부 에이스", "아웃사이더", "반장", "기타 (직접 입력)"],
+        abilities: ["압도적 인지도/인기", "완벽한 학업 능력", "친화력 최상", "감성적 음악 연주", "기타 (직접 입력)"],
+        factions: ["학원 학생회", "밴드 동아리", "선도부", "귀가부 연합", "기타 (직접 입력)"]
+      },
+      urban: {
+        races: ["인간 각성자", "S급 헌터", "변종 마수", "성좌의 대리인", "기타 (직접 입력)"],
+        classes: ["탱커 / 기사", "원거리 딜러", "힐러 / 버퍼", "소환사 / 네크로맨서", "길드 마스터", "기타 (직접 입력)"],
+        abilities: ["성좌의 가호 (신성력)", "그림자 군단 소환", "지옥불 발사", "공간 이동 포탈", "기타 (직접 입력)"],
+        factions: ["국가 헌터 관리국", "세계 1위 길드 '태양'", "사설 마수 연구소", "독고다이 프리랜서", "기타 (직접 입력)"]
+      },
+      cyberpunk: {
+        races: ["순수 인간", "사이버보그 (개조 인간)", "안드로이드 / 신스", "디지털 AI 인격", "기타 (직접 입력)"],
+        classes: ["넷러너 (해커)", "솔로 (용병/킬러)", "테크의사", "기업 스파이", "슬럼가 가비지 헌터", "기타 (직접 입력)"],
+        abilities: ["안구 해킹 및 무력화", "산데비스탄 (고속 이동)", "광학 위장 (투명화)", "사이버 의수 폭파", "기타 (직접 입력)"],
+        factions: ["메가코프 기업군", "나이트 시티 용병 픽서", "디지털 무정부주의자", "스트리트 갱단", "기타 (직접 입력)"]
+      },
+      steampunk: {
+        races: ["증기 공학자", "태엽 인형 (오토마톤)", "하늘의 정복자", "귀족 자제", "기타 (직접 입력)"],
+        classes: ["공중함선 선장", "태엽 기계공", "증기 총사", "비행사", "기타 (직접 입력)"],
+        abilities: ["증기 압축 캐논", "태엽 정밀 분석", "공중 함선 조종", "시계태엽 가속", "기타 (직접 입력)"],
+        factions: ["제국 증기공학회", "공중 해적단", "시계태엽 수호대", "지하 혁명군", "기타 (직접 입력)"]
+      },
+      darktale: {
+        races: ["저주받은 인간", "흡혈귀 (뱀파이어)", "잔혹 동화 주인공", "심연의 굴레를 쓴 자", "기타 (직접 입력)"],
+        classes: ["잔혹 마법사", "혈액 검사", "원혼 사냥꾼", "이단 심판관", "기타 (직접 입력)"],
+        abilities: ["잔혹동화 주술", "혈액 제어 및 무기화", "불사의 저주", "광기 유발의 눈빛", "기타 (직접 입력)"],
+        factions: ["핏빛 잔혹 교단", "이단 심판 집행부", "동화속 잔혹 잔재", "방랑 사냥꾼", "기타 (직접 입력)"]
+      },
+      apocalypse: {
+        races: ["생존자", "돌연변이 인간", "바이오 안드로이드", "약탈자", "기타 (직접 입력)"],
+        classes: ["스캐빈저 (수집가)", "의료원", "방랑 게릴라", "쉘터 리더", "기타 (직접 입력)"],
+        abilities: ["독성 면역 및 신체 강화", "생존 물자 탐지", "폐허 해킹 / 가동", "야생 동물 길들이기", "기타 (직접 입력)"],
+        factions: ["중앙 방주 쉘터", "황무지 약탈단", "구시대 연구회", "독립 생존자", "기타 (직접 입력)"]
+      },
+      wuxia: {
+        races: ["무림인", "선협 선인", "묘족 / 영수", "마교인", "기타 (직접 입력)"],
+        classes: ["검객 / 검수", "권법가", "의선 (의원)", "도사", "마교 교주", "기타 (직접 입력)"],
+        abilities: ["검강 발출", "경공 (신법)", "환골탈태", "마공 강기", "기타 (직접 입력)"],
+        factions: ["화산파 / 무당파", "천마신교", "개방 (거지 연합)", "사천당가", "기타 (직접 입력)"]
+      },
+      occult: {
+        races: ["광기의 탐정", "고대신의 사제", "심해인 혼혈", "금서 연구자", "기타 (직접 입력)"],
+        classes: ["사설 탐정", "고고학 교수", "차원 교단 교주", "정신과 의사", "기타 (직접 입력)"],
+        abilities: ["심연의 언어 통역", "정신 감응 및 환각", "금단 주술 발동", "광기 내성", "기타 (직접 입력)"],
+        factions: ["아캄 고고학회", "은밀한 꿈의 교단", "정신건강 연구소", "익명의 사냥꾼", "기타 (직접 입력)"]
+      },
+      spaceopera: {
+        races: ["지구 연방 인간", "외계 문명체", "사이보그 함장", "에테르 에너지체", "기타 (직접 입력)"],
+        classes: ["함대 제국 총사령관", "우주 해적", "현상금 사냥꾼", "성간 코스믹 내비게이터", "기타 (직접 입력)"],
+        abilities: ["초광속 워프 계산", "플라즈마 캐논 조종", "외계 텔레파시", "중력장 왜곡", "기타 (직접 입력)"],
+        factions: ["은하 연방군", "성간 해적 연합", "코스믹 탐사대", "아우터 갤럭시 종족", "기타 (직접 입력)"]
+      },
+      mythology: {
+        races: ["신 (Goddess/God)", "반인반신 (Demigod)", "천상계 수호자", "타락한 신성", "기타 (직접 입력)"],
+        classes: ["전쟁의 신", "지혜의 사제", "신의 대리인", "하늘의 파수꾼", "기타 (직접 입력)"],
+        abilities: ["천벌의 벼락", "신의 가호 / 절대 권능", "영혼 승화 및 환생", "원소 지배", "기타 (직접 입력)"],
+        factions: ["올림포스 / 천상 의회", "심연의 타락신 파벌", "지상 신화 수호단", "기타 (직접 입력)"]
+      }
+    };
+
+    const personalityPresets = [
+      "츤데레", "얀데레", "냉철함", "무뚝뚝", "겉바속촉", "잔망스러움", "자존심 높음", "나르시시스트",
+      "은근 따뜻함", "광기", "능글맞음", "헌신적", "퇴폐미", "유리멘탈", "철벽", "4차원", "소심함",
+      "마이페이스", "장난기 많음", "통찰력 있음", "냉소적", "순진무구", "완벽주의", "피폐", "나태함", "광신도"
+    ];
+
+    const speechStyleData = [
+      { style: "반말, 쿨하고 무덤덤함", sample: "내가 왜 너랑 같이 가야 하는데? ...뭐, 심심하긴 했으니까." },
+      { style: "존댓말, 격식 있고 정중함", sample: "안녕하십니까. 부디 저의 예의가 어긋나지 않았기를 바랍니다." },
+      { style: "하대조, 도도하고 오만한 어조", sample: "하, 감히 누구 앞에서 고개를 드는 것이냐? 네 주제를 알아라." },
+      { style: "날카롭고 까칠함 (츤데레)", sample: "착각하지 마! 널 위해 준비한 게 아니라고. 그냥 남아서 준 거야!" },
+      { style: "능글맞고 유쾌한 어조", sample: "어라~ 그렇게 진지한 표정 지으면 내가 쑥스럽잖아, 안 그래?" },
+      { style: "냉소적이고 침울한 말투", sample: "희망 같은 소리 하고 있네... 세상이 그렇게 만만해 보여?" },
+      { style: "신사적이고 다정한 어조", sample: "손을 잡으세요. 당신이 길을 잃지 않도록 제가 곁에 있겠습니다." },
+      { style: "기품 있는 여왕/귀족 말투", sample: "오호라, 이 정도 시련으로 내 마음을 뒤흔들 수 있을 거라 생각했느냐?" },
+      { style: "중2병 / 흑염룡 말투", sample: "내 안의 봉인된 구속구가 풀리는 순간... 이 세계는 멸망할 것이다." },
+      { style: "4차원 / 알 수 없는 언행", sample: "저기 저 구름은 오늘 딸기맛 소다 향이 날 것 같지 않아?" },
+      { style: "광기 어린 열정적 어조", sample: "아하하하! 너무 아름다워! 좀 더 괴로워해봐, 더 깊은 절망을 보여줘!" },
+      { style: "사투리 (정감 있는 억양)", sample: "마! 쫄았나? 내만 믿고 딱 따라오면 아무 탈 없을 끼다!" },
+      { style: "기타 (직접 입력)", sample: "" }
+    ];
+
+    const vastBackstoryPool = [
+      "고대 마법 가문의 단 하나뿐인 생존자로, 가문의 멸문 배경에 숨겨진 금단의 진실을 파헤치고 있다.",
+      "마왕군의 공격으로 고향을 잃고 용병단에 들어가 어린 시절을 보냈다. 칼 한 자루로 신분을 올린 실력자.",
+      "기사단의 촉망받는 엘리트였으나, 상부의 비리를 고발했다가 배신당해 영지에서 쫓겨난 어두운 과거가 있다.",
+      "핏빛 교단의 저주받은 의식에서 유일하게 살아남은 인물. 피부 아래 검은 피가 흐르며 환청에 시달린다.",
+      "가장 사랑하는 사람을 자신의 손으로 베어야 했던 비극을 겪은 후, 심연의 괴물들을 사냥하는 복수귀가 되었다.",
+      "이단 심판관으로 수많은 신도를 처형했으나, 자신이 믿던 교단이 사실 절대 악이었음을 깨닫고 궤멸을 결심했다.",
+      "월식의 밤에 태어나 뱀파이어의 피를 물려받은 반인반마. 자신을 배척하는 인간과 뱀파이어 모두에게 쫓긴다.",
+      "어릴 적 의문의 이능력 각성 사건으로 부모님을 잃었다. 현재는 낮에는 평범한 학생, 밤에는 도시 요원이다.",
+      "슬럼가 출신의 천재 해커로, 거대 기업의 불법 데이터 노예로 잡힌 동생을 구하기 위한 자금을 모으고 있다.",
+      "용과의 계약으로 불사의 축복이자 저주를 받았다. 자신보다 소중한 사람들을 계속 떠나보내며 고독을 씹는다.",
+      "전설 속 봉인된 마왕의 파편이 체내에 깃들어 있어, 때때로 자아를 잃고 폭주할 위험을 안고 산다.",
+      "정령들의 사랑을 받고 태어났으나, 신비로운 이능력 때문에 왕국의 비밀 감옥에 갇혀 지내다 탈출했다.",
+      "죽음의 신을 모시는 기사단의 일원이었으나 몰락 후 혼자 남아, 세상의 멸망을 막기 위해 외로운 투쟁을 이어간다.",
+      "남들에게 보이지 않는 괴기한 영체나 귀신을 볼 수 있는 체질 때문에 또래 사이에서 고립되어 자랐다.",
+      "기업 간의 치열한 암투에서 스파이로 활용되다 버림받은 클론 인간. 자신만의 진짜 정체성을 찾으려 한다.",
+      "시간을 되돌리는 아티팩트를 사용하여 세 번째 삶을 살고 있는 회귀자. 이번 생에는 사랑하는 이들의 비극을 막으려 한다.",
+      "기억을 상실한 채 황폐한 신전 입구에서 깨어났다. 품에 지닌 것은 주인 없는 고대 열쇠 하나뿐이다.",
+      "원래 평범한 편의점 알바생이었으나, 야간 근무를 마치고 귀가하던 중 차원 균열에 휘말려 소환되었다.",
+      "현대 세계에서는 서브컬처 덕후였으나, 이세계로 넘어오면서 상태창과 사기적인 연금술 스킬을 통째로 얻었다.",
+      "차원이동 직후 용사 파티에 합류했으나, 억울한 누명을 쓰고 버려졌다. 복수하고자 힘을 키우는 중이다.",
+      "가상 현실 게임의 최고 레벨 플레이어였으나, 서버 종료 순간 게임 속 본인의 캐릭터 체형 그대로 고립되었다.",
+      "마왕을 물리치기 위해 소환되었지만, 평화롭게 귀농하여 유유자적 살고 싶어 하는 게으른 천재.",
+      "평범한 회사원이었으나 과로사 후 이세계 제국의 황족 막내로 재탄생했다. 이번 생엔 무조건 놀고먹는 게 목표다.",
+      "세계관의 막장 소설 속 악역 영애로 빙의했다. 예정된 단두대 엔딩을 피하기 위해 관계를 비틀고 있다.",
+      "수인족 마을에서 고아로 자라났다. 인간 사회에 적응하려 노력하지만 가끔 야생의 본능이 불쑥 튀어나온다.",
+      "유명 명문 가문의 후계자이지만, 가문의 엄격한 규율과 압박에 환멸을 느끼고 일탈을 꿈꾸고 있다.",
+      "희귀한 정령석 원석을 정제하는 비밀 명문 대장장이 가문의 후계자. 자신만의 최고의 무기를 제련하려 한다.",
+      "길거리에서 파츠를 주워 모아 만든 수제 안드로이드로, 자신이 진짜 인간이라고 믿고 싶어 한다.",
+      "원래는 전설 속 마신이었으나 주문 실패로 인해 자그마한 마스코트 체형으로 봉인된 채 신분을 숨기고 있다.",
+      "학원 도시 최고의 문제아이자 땡땡이 전문가. 하지만 동료가 위기에 처하면 무섭도록 진지해진다.",
+      "유튜버이자 스트리머로 활동하며 이능력 사건 현장을 생중계하다 사건에 깊게 휘말린 미디어 스타.",
+      "옛 영웅의 은퇴한 제자로, 스승의 마지막 유언인 고대 아티팩트 회수를 위해 여행 중이다.",
+      "배신당해 사망하기 직전, 고대 신전의 수호 정령과 영혼을 융합하여 부활한 성기사.",
+      "자신의 목숨을 바쳐 멸망을 막은 영웅의 재림으로 추앙받으나, 정작 본인은 조용히 평화로운 삶을 살고 싶어 한다.",
+      "잊힌 고대 국왕의 혈통을 유일하게 계승받아, 흩어진 삼색의 보주를 찾아 왕국을 재건하려 한다."
+    ];
+
+    window.onload = function() {
+      selectWorldview('fantasy');
+      renderPersonalityTags();
+      populateSpeechStyles();
+    };
+
+    function selectWorldview(wvKey) {
+      selectedWorldview = wvKey;
+      document.querySelectorAll('.wv-btn').forEach(btn => {
+        btn.classList.remove('wv-card-selected');
+      });
+      const selectedBtn = document.getElementById(`wv-${wvKey}`);
+      if (selectedBtn) {
+        selectedBtn.classList.add('wv-card-selected');
+      }
+      renderDynamicFields();
+    }
+
+    function renderDynamicFields() {
+      const schema = worldviewSchemas[selectedWorldview] || worldviewSchemas.fantasy;
+      const container = document.getElementById('dynamic-fields-container');
+
+      container.innerHTML = `
+        <div>
+          <label class="block text-xs font-semibold text-cyberMuted mb-2">종족 (Race)</label>
+          <div class="custom-select-wrapper">
+            <select id="dyn-race" onchange="toggleCustomInput('dyn-race', 'dyn-race-custom')" class="w-full cyber-select rounded-xl px-4 py-3 text-xs appearance-none">
+              ${schema.races.map(r => `<option value="${r}">${r}</option>`).join('')}
+            </select>
+          </div>
+          <input type="text" id="dyn-race-custom" placeholder="종족 직접 입력..." class="w-full cyber-input rounded-xl px-4 py-2.5 text-xs mt-2 hidden">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-cyberMuted mb-2">직업 / 신분 (Class)</label>
+          <div class="custom-select-wrapper">
+            <select id="dyn-class" onchange="toggleCustomInput('dyn-class', 'dyn-class-custom')" class="w-full cyber-select rounded-xl px-4 py-3 text-xs appearance-none">
+              ${schema.classes.map(c => `<option value="${c}">${c}</option>`).join('')}
+            </select>
+          </div>
+          <input type="text" id="dyn-class-custom" placeholder="직업 직접 입력..." class="w-full cyber-input rounded-xl px-4 py-2.5 text-xs mt-2 hidden">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-cyberMuted mb-2">주요 능력 / 필살기 (Ability)</label>
+          <div class="custom-select-wrapper">
+            <select id="dyn-ability" onchange="toggleCustomInput('dyn-ability', 'dyn-ability-custom')" class="w-full cyber-select rounded-xl px-4 py-3 text-xs appearance-none">
+              ${schema.abilities.map(a => `<option value="${a}">${a}</option>`).join('')}
+            </select>
+          </div>
+          <input type="text" id="dyn-ability-custom" placeholder="능력 직접 입력..." class="w-full cyber-input rounded-xl px-4 py-2.5 text-xs mt-2 hidden">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-cyberMuted mb-2">소속 / 팩션 (Faction)</label>
+          <div class="custom-select-wrapper">
+            <select id="dyn-faction" onchange="toggleCustomInput('dyn-faction', 'dyn-faction-custom')" class="w-full cyber-select rounded-xl px-4 py-3 text-xs appearance-none">
+              ${schema.factions.map(f => `<option value="${f}">${f}</option>`).join('')}
+            </select>
+          </div>
+          <input type="text" id="dyn-faction-custom" placeholder="소속 직접 입력..." class="w-full cyber-input rounded-xl px-4 py-2.5 text-xs mt-2 hidden">
+        </div>
+      `;
+    }
+
+    function toggleCustomInput(selectId, customInputId) {
+      const selectVal = document.getElementById(selectId).value;
+      const customInput = document.getElementById(customInputId);
+      if (selectVal === "기타 (직접 입력)") {
+        customInput.classList.remove('hidden');
+        customInput.focus();
+      } else {
+        customInput.classList.add('hidden');
+      }
+    }
+
+    function getFieldValue(selectId) {
+      const selectEl = document.getElementById(selectId);
+      if (!selectEl) return '미정';
+      if (selectEl.value === "기타 (직접 입력)") {
+        const customEl = document.getElementById(`${selectId}-custom`);
+        return customEl && customEl.value.trim() ? customEl.value.trim() : '직접 입력 미기재';
+      }
+      return selectEl.value;
+    }
+
+    function renderPersonalityTags() {
+      const container = document.getElementById('personality-tags');
+      container.innerHTML = personalityPresets.map(tag => {
+        const isSelected = activePersonalityTags.has(tag);
+        return `
+          <button type="button" onclick="toggleTag('${tag}')" class="px-3 py-1 rounded-lg text-xs font-semibold transition ${isSelected ? 'bg-cyberAccent text-white shadow-lg shadow-cyberAccent/30' : 'bg-cyberCard text-cyberMuted border border-cyberBorder hover:border-cyberGlow hover:text-white'}">
+            # ${tag}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function toggleTag(tag) {
+      if (activePersonalityTags.has(tag)) {
+        activePersonalityTags.delete(tag);
+      } else {
+        activePersonalityTags.add(tag);
+      }
+      renderPersonalityTags();
+    }
+
+    function rollRandomPersonalityTags() {
+      activePersonalityTags.clear();
+      const randomCount = Math.floor(Math.random() * 3) + 2;
+      const shuffled = [...personalityPresets].sort(() => 0.5 - Math.random());
+      shuffled.slice(0, randomCount).forEach(t => activePersonalityTags.add(t));
+      renderPersonalityTags();
+    }
+
+    function populateSpeechStyles() {
+      const selectEl = document.getElementById('input-speech-tone');
+      selectEl.innerHTML = speechStyleData.map((item, idx) => `
+        <option value="${idx}">${item.style}</option>
+      `).join('');
+      onSpeechToneChange();
+    }
+
+    function onSpeechToneChange() {
+      const idx = document.getElementById('input-speech-tone').value;
+      const selectedItem = speechStyleData[idx];
+      const customInput = document.getElementById('input-speech-tone-custom');
+
+      if (selectedItem?.style === "기타 (직접 입력)") {
+        customInput.classList.remove('hidden');
+        customInput.focus();
+        document.getElementById('input-dialogue').value = "";
+      } else {
+        customInput.classList.add('hidden');
+        if (selectedItem) {
+          document.getElementById('input-dialogue').value = selectedItem.sample;
+        }
+      }
+    }
+
+    function generateRandomDialogue() {
+      const validStyles = speechStyleData.filter(s => s.style !== "기타 (직접 입력)");
+      const randomItem = validStyles[Math.floor(Math.random() * validStyles.length)];
+      const idx = speechStyleData.findIndex(s => s.style === randomItem.style);
+      
+      document.getElementById('input-speech-tone').value = idx;
+      onSpeechToneChange();
+    }
+
+    function generateRandomBackstory() {
+      const randomText = vastBackstoryPool[Math.floor(Math.random() * vastBackstoryPool.length)];
+      document.getElementById('input-backstory').value = randomText;
+    }
+
+    function rollRandomFields() {
+      const schema = worldviewSchemas[selectedWorldview];
+      if (!schema) return;
+
+      const pickRandomNoCustom = (arr) => {
+        const filtered = arr.filter(x => x !== "기타 (직접 입력)");
+        return filtered[Math.floor(Math.random() * filtered.length)];
+      };
+
+      document.getElementById('dyn-race').value = pickRandomNoCustom(schema.races);
+      toggleCustomInput('dyn-race', 'dyn-race-custom');
+
+      document.getElementById('dyn-class').value = pickRandomNoCustom(schema.classes);
+      toggleCustomInput('dyn-class', 'dyn-class-custom');
+
+      document.getElementById('dyn-ability').value = pickRandomNoCustom(schema.abilities);
+      toggleCustomInput('dyn-ability', 'dyn-ability-custom');
+
+      document.getElementById('dyn-faction').value = pickRandomNoCustom(schema.factions);
+      toggleCustomInput('dyn-faction', 'dyn-faction-custom');
+
+      rollRandomPersonalityTags();
+      generateRandomDialogue();
+      generateRandomBackstory();
+    }
+
+    function goToStep(stepNum) {
+      if (stepNum > 1) {
+        const nameVal = document.getElementById('input-name').value.trim();
+        if (!nameVal) {
+          alert('캐릭터 이름을 입력해주세요!');
+          return;
+        }
+      }
+
+      currentStep = stepNum;
+      for (let i = 1; i <= 4; i++) {
+        const stepEl = document.getElementById(`step-${i}`);
+        const navSpan = document.getElementById(`step-nav-${i}`).querySelector('span:first-child');
+        
+        if (i === stepNum) {
+          stepEl.classList.remove('hidden');
+          navSpan.className = "w-7 h-7 rounded-full border border-cyberAccent flex items-center justify-center font-mono font-bold text-xs bg-cyberAccent text-white";
+        } else {
+          stepEl.classList.add('hidden');
+          navSpan.className = i < stepNum ? 
+            "w-7 h-7 rounded-full border border-cyberGlow flex items-center justify-center font-mono font-bold text-xs bg-cyberInput text-cyberGlow" : 
+            "w-7 h-7 rounded-full border border-cyberBorder flex items-center justify-center font-mono font-bold text-xs bg-cyberInput text-cyberMuted";
+        }
+      }
+    }
+
+    function restartAll() {
+      if (confirm('모든 기록을 초기화하고 첫 단계부터 다시 작성하시겠습니까?')) {
+        document.getElementById('input-name').value = '';
+        document.getElementById('input-gender').selectedIndex = 0;
+        document.getElementById('input-personality-text').value = '';
+        document.getElementById('input-backstory').value = '';
+        document.getElementById('input-dialogue').value = '';
+
+        const customFieldIds = ['dyn-race-custom', 'dyn-class-custom', 'dyn-ability-custom', 'dyn-faction-custom', 'input-speech-tone-custom'];
+        customFieldIds.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.value = '';
+            el.classList.add('hidden');
+          }
+        });
+
+        activePersonalityTags.clear();
+        renderPersonalityTags();
+        selectWorldview('fantasy');
+
+        document.getElementById('input-speech-tone').selectedIndex = 0;
+        onSpeechToneChange();
+
+        document.getElementById('sheet-output').value = '';
+        window.personaData = null;
+
+        currentStep = 1;
+        for (let i = 1; i <= 4; i++) {
+          const stepEl = document.getElementById(`step-${i}`);
+          const navSpan = document.getElementById(`step-nav-${i}`).querySelector('span:first-child');
+          
+          if (i === 1) {
+            stepEl.classList.remove('hidden');
+            navSpan.className = "w-7 h-7 rounded-full border border-cyberAccent flex items-center justify-center font-mono font-bold text-xs bg-cyberAccent text-white";
+          } else {
+            stepEl.classList.add('hidden');
+            navSpan.className = "w-7 h-7 rounded-full border border-cyberBorder flex items-center justify-center font-mono font-bold text-xs bg-cyberInput text-cyberMuted";
+          }
+        }
+      }
+    }
+
+    function generateFinalSheet() {
+      const name = document.getElementById('input-name').value || '미정';
+      const gender = document.getElementById('input-gender').value;
+      const race = getFieldValue('dyn-race');
+      const jobClass = getFieldValue('dyn-class');
+      const ability = getFieldValue('dyn-ability');
+      const faction = getFieldValue('dyn-faction');
+      
+      const tagsArray = Array.from(activePersonalityTags);
+      const customPersonality = document.getElementById('input-personality-text').value;
+      const personalityStr = [...tagsArray, customPersonality].filter(Boolean).join(', ') || '특이사항 없음';
+      
+      const toneSelectIdx = document.getElementById('input-speech-tone').value;
+      const selectedToneObj = speechStyleData[toneSelectIdx];
+      let tone = selectedToneObj?.style || '일반적인 어조';
+      if (tone === "기타 (직접 입력)") {
+        tone = document.getElementById('input-speech-tone-custom').value.trim() || '직접 지정 어조';
+      }
+
+      const dialogue = document.getElementById('input-dialogue').value || '"..."';
+      const backstory = document.getElementById('input-backstory').value || '베일에 싸인 과거를 가지고 있다.';
+
+      window.personaData = {
+        name, gender, worldview: selectedWorldview, race, jobClass, ability, faction,
+        personality: personalityStr, tone, dialogue, backstory
+      };
+
+      renderFormatOutput();
+    }
+
+    function switchFormat(fmtKey) {
+      currentFormat = fmtKey;
+      ['standard', 'markdown', 'prompt', 'archive'].forEach(k => {
+        const btn = document.getElementById(`fmt-${k}`);
+        if (k === fmtKey) {
+          btn.className = "px-3 py-1.5 rounded-lg font-semibold bg-cyberAccent text-white";
+        } else {
+          btn.className = "px-3 py-1.5 rounded-lg font-semibold text-cyberMuted hover:text-white";
+        }
+      });
+      renderFormatOutput();
+    }
+
+    function renderFormatOutput() {
+      const d = window.personaData;
+      if (!d) return;
+
+      let resultText = "";
+
+      if (currentFormat === 'standard') {
+        resultText = `================================================
+📜 [ 페르소나 캐릭터 기재 시트 ]
+================================================
+■ 이름: ${d.name}
+■ 성별: ${d.gender}
+■ 세계관: ${d.worldview.toUpperCase()}
+■ 종족: ${d.race}
+■ 직업/신분: ${d.jobClass}
+■ 대표 능력: ${d.ability}
+■ 소속/팩션: ${d.faction}
+
+■ 성격 키워드:
+  ${d.personality}
+
+■ 말투 및 어조:
+  ${d.tone}
+
+■ 대표 대사:
+  ${d.dialogue}
+
+■ 과거 배경 & 비밀:
+  ${d.backstory}
+================================================`;
+      } else if (currentFormat === 'markdown') {
+        resultText = `# 📜 Persona: ${d.name}
+
+> **" ${d.dialogue} "**
+
+---
+
+### 📌 기본 프로필
+- **성별:** ${d.gender}
+- **세계관:** ${d.worldview}
+- **종족:** ${d.race}
+- **직업/신분:** ${d.jobClass}
+- **소속:** ${d.faction}
+- **대표 능력:** \`${d.ability}\`
+
+---
+
+### 🧠 성격 & 말투
+- **성격 특성:** ${d.personality}
+- **어조 스타일:** ${d.tone}
+
+---
+
+### 📜 과거 스토리
+${d.backstory}
+`;
+      } else if (currentFormat === 'prompt') {
+        resultText = `[Character("${d.name}")
+{
+  Gender("${d.gender}")
+  Worldview("${d.worldview}")
+  Race("${d.race}")
+  Class("${d.jobClass}")
+  Faction("${d.faction}")
+  Ability("${d.ability}")
+  Personality("${d.personality}")
+  SpeechStyle("${d.tone}")
+  Mindset("${d.backstory}")
+  DialogueExample("${d.dialogue}")
+}]`;
+      } else if (currentFormat === 'archive') {
+        resultText = JSON.stringify(d, null, 2);
+      }
+
+      document.getElementById('sheet-output').value = resultText;
+    }
+
+    function copySheetToClipboard() {
+      const outputText = document.getElementById('sheet-output').value;
+      if (!outputText) return;
+
+      const textarea = document.createElement('textarea');
+      textarea.value = outputText;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+
+      const toast = document.getElementById('copy-toast');
+      toast.classList.remove('opacity-0');
+      setTimeout(() => {
+        toast.classList.add('opacity-0');
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
